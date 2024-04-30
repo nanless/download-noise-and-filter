@@ -4,3 +4,5 @@ requests_oauthlib
 joblib
 librosa
 sox
+funasr
+modelscope
