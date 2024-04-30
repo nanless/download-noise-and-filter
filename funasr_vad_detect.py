@@ -6,9 +6,9 @@ from funasr import AutoModel
 
 model = AutoModel(model="fsmn-vad", model_revision="v2.0.4")
 
-data_folder = "output/download_noises"
-dest_folder = "output/download_noises_vad_filtered"
-filterout_folder = "output/download_noises_vad_filterout"
+data_folder = "output/download_noises_cutto20s"
+dest_folder = "output/download_noises_cutto20s_vad_filtered"
+filterout_folder = "output/download_noises_cutto20s_vad_filterout"
 
 if not os.path.exists(dest_folder):
     os.makedirs(dest_folder)
@@ -68,15 +68,15 @@ for audio_file in audio_files:
         continue
     if waveform.ndim > 1:
         waveform = waveform[:, 0]
-    waveform_16k = librosa.resample(waveform, orig_sr=sample_rate, target_sr=48000)
+    waveform = librosa.resample(waveform, orig_sr=sample_rate, target_sr=48000)
     segments_result = model.generate(audio_file)
     segments_result = segments_result[0]
-    speech_length = 0
+    speech_length = 0 # in miliseconds
     if len(segments_result['value']) > 0:
         for segment in segments_result['value']:
             speech_length += segment[1] - segment[0]
     print(f"audio file: {audio_file}, segments: {segments_result['value']}, total length: {speech_length}")
-    if speech_length > 1600:
+    if speech_length > 600:
         dest_path = audio_file.replace(data_folder, filterout_folder)
         dest_path = normalize_filename(dest_path)
         dest_dir = os.path.dirname(dest_path)
