@@ -9,6 +9,8 @@ model = AutoModel(model="fsmn-vad", model_revision="v2.0.4")
 data_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband"
 dest_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband_vad_filtered"
 filterout_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband_vad_filterout"
+voice_active_thresh_ms = 600
+
 
 if not os.path.exists(dest_folder):
     os.makedirs(dest_folder)
@@ -76,7 +78,7 @@ for audio_file in tqdm(audio_files):
         for segment in segments_result['value']:
             speech_length += segment[1] - segment[0]
     print(f"audio file: {audio_file}, segments: {segments_result['value']}, total length: {speech_length}")
-    if speech_length > 500:
+    if speech_length > voice_active_thresh_ms:
         dest_path = audio_file.replace(data_folder, filterout_folder)
         dest_path = normalize_filename(dest_path)
         dest_dir = os.path.dirname(dest_path)
