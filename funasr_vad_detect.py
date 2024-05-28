@@ -6,9 +6,9 @@ from funasr import AutoModel
 
 model = AutoModel(model="fsmn-vad", model_revision="v2.0.4")
 
-data_folder = "output/download_noises_cutto20s"
-dest_folder = "output/download_noises_cutto20s_vad_filtered"
-filterout_folder = "output/download_noises_cutto20s_vad_filterout"
+data_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband"
+dest_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband_vad_filtered"
+filterout_folder = "/root/autodl-tmp/DNS_challenge5_data/datasets_fullband/noise_fullband_vad_filterout"
 
 if not os.path.exists(dest_folder):
     os.makedirs(dest_folder)
@@ -60,7 +60,7 @@ def normalize_filename(filename):
 
 audio_files = find_all_wavs(data_folder)
 # for audio_file in tqdm(audio_files):
-for audio_file in audio_files:
+for audio_file in tqdm(audio_files):
     try:
         waveform, sample_rate = sf.read(audio_file)
     except:
@@ -76,7 +76,7 @@ for audio_file in audio_files:
         for segment in segments_result['value']:
             speech_length += segment[1] - segment[0]
     print(f"audio file: {audio_file}, segments: {segments_result['value']}, total length: {speech_length}")
-    if speech_length > 600:
+    if speech_length > 500:
         dest_path = audio_file.replace(data_folder, filterout_folder)
         dest_path = normalize_filename(dest_path)
         dest_dir = os.path.dirname(dest_path)
