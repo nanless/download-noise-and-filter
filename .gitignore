@@ -1,3 +1,6 @@
 output
 outputs
 *.log
+downloaded_models
+eval_data
+.ipynb_checkpoints
